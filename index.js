@@ -12,8 +12,18 @@ app.use(express.json());
 //     lastName: 'Shahzad',
 //     email: 'itsmsks@gmail.com'
 // });
-const users = userRepository.getUsers();
-console.log(users);
+// const users = userRepository.getUsers();
+// console.log(users);
+
+app.get('/users', (httpRequest, httpResponse, next) => {
+    userRepository.getUsers().then((result)=>{
+        httpResponse.json(result);
+    });
+  });
+  app.get('/usersAsync', async (httpRequest, httpResponse, next) => {
+    httpResponse.json(await userRepository.getUsers());
+  });
+
 app.listen(enviroment.PORT, () =>
     console.log(`listening on ${enviroment.URL}:${enviroment.PORT}`)
   );
