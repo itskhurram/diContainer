@@ -1,8 +1,10 @@
 'use strict';
 
 const express = require('express');
-const userRepository = require('./userRepository');
 const enviroment = require('./environment');
+const userController = require('./userController');
+const userRepository = require('./userRepository');
+const userService = require('./userService');
 const app = express();
 app.use(express.json());
 
@@ -14,15 +16,11 @@ app.use(express.json());
 // });
 // const users = userRepository.getUsers();
 // console.log(users);
-
-app.get('/users', (httpRequest, httpResponse, next) => {
-    userRepository.getUsers().then((result)=>{
-        httpResponse.json(result);
-    });
-  });
-  app.get('/usersAsync', async (httpRequest, httpResponse, next) => {
-    httpResponse.json(await userRepository.getUsers());
-  });
+const repo = userRepository();
+const service = userService(repo);
+const controller =  userController(service)
+app.get('/users', controller.getUsers);
+app.get('/usersAsync', controller.getUsersAsync);
 
 app.listen(enviroment.PORT, () =>
     console.log(`listening on ${enviroment.URL}:${enviroment.PORT}`)
